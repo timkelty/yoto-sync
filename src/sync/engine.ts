@@ -133,7 +133,7 @@ export async function sync(
   // 5. Build card payload
   const title =
     request.title ??
-    deriveTitle(request.source.type === "local-directory" ? request.source.path : "My Playlist");
+    deriveTitle(request.source);
 
   const cardUpdate = buildCardUpdate(
     request.cardId,
@@ -185,8 +185,15 @@ export async function sync(
 }
 
 /**
- * Derive a card title from a directory path.
+ * Derive a card title from the adapter config.
  */
-function deriveTitle(pathOrName: string): string {
-  return basename(pathOrName) || "My Playlist";
+function deriveTitle(source: import("../adapters/types.js").AdapterConfig): string {
+  switch (source.type) {
+    case "local-directory":
+      return basename(source.path) || "My Playlist";
+    case "plex-playlist":
+      return `Plex Playlist ${source.playlistId}`;
+    default:
+      return "My Playlist";
+  }
 }

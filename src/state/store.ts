@@ -13,8 +13,10 @@ interface StateData {
  */
 export class StateStore {
   private readonly filePath: string;
+  private readonly dataDir: string;
 
   constructor(dataDir: string) {
+    this.dataDir = dataDir;
     this.filePath = join(dataDir, "state.json");
   }
 
@@ -33,6 +35,31 @@ export class StateStore {
     const data = await this.loadAll();
     data[cardId] = snapshot;
     await this.writeAll(data);
+  }
+
+  /**
+   * Load arbitrary JSON data by key (stored as separate files in dataDir).
+   * Returns null if the file doesn't exist.
+   */
+  async load<T>(key: string): Promise<T | null> {
+    try {
+      const filePath = join(this.dataDir, `${key}.json`);
+      const raw = await readFile(filePath, "utf-8");
+      return JSON.parse(raw) as T;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Save arbitrary JSON data by key (atomic write to dataDir).
+   */
+  async save<T>(key: string, data: T): Promise<void> {
+    await mkdir(this.dataDir, { recursive: true });
+    const filePath = join(this.dataDir, `${key}.json`);
+    const tmpPath = `${filePath}.tmp`;
+    await writeFile(tmpPath, JSON.stringify(data, null, 2), "utf-8");
+    await rename(tmpPath, filePath);
   }
 
   private async loadAll(): Promise<StateData> {

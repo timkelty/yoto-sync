@@ -39,9 +39,34 @@ export interface LocalDirectoryConfig {
 }
 
 /**
+ * Configuration for a Plex playlist source.
+ */
+export interface PlexPlaylistConfig {
+  type: "plex-playlist";
+  /** Plex playlist ratingKey (numeric ID) */
+  playlistId: number;
+  /** Plex server URL (e.g. http://192.168.1.100:32400) */
+  plexUrl: string;
+  /** Plex authentication token */
+  plexToken: string;
+  /**
+   * Base path prefix for Plex media on this host.
+   * If the Plex server sees files at /data/music/... but they're mounted
+   * at /mnt/media/music/... on this host, set plexMediaRoot to the local mount.
+   * When not set, file paths from Plex are used as-is.
+   */
+  mediaPathMapping?: {
+    /** The path prefix as Plex sees it (e.g. "/data/music") */
+    from: string;
+    /** The local mount path (e.g. "/mnt/media/music") */
+    to: string;
+  };
+}
+
+/**
  * Union of all adapter configs. Grows as adapters are added.
  */
-export type AdapterConfig = LocalDirectoryConfig;
+export type AdapterConfig = LocalDirectoryConfig | PlexPlaylistConfig;
 
 /**
  * The contract every playlist source adapter must implement.

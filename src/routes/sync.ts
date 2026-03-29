@@ -48,6 +48,28 @@ export function createSyncRoute(config: SyncRouteConfig): typeof syncRoute {
       );
     }
 
+    if (body.source.type === "plex-playlist") {
+      const plexSource = body.source as import("../adapters/types.js").PlexPlaylistConfig;
+      if (!plexSource.playlistId || typeof plexSource.playlistId !== "number") {
+        return c.json(
+          { error: "source.playlistId is required (number) for plex-playlist adapter" },
+          400,
+        );
+      }
+      if (!plexSource.plexUrl || typeof plexSource.plexUrl !== "string") {
+        return c.json(
+          { error: "source.plexUrl is required (string) for plex-playlist adapter" },
+          400,
+        );
+      }
+      if (!plexSource.plexToken || typeof plexSource.plexToken !== "string") {
+        return c.json(
+          { error: "source.plexToken is required (string) for plex-playlist adapter" },
+          400,
+        );
+      }
+    }
+
     const deps: SyncDeps = {
       sdk: config.sdk,
       stateStore,

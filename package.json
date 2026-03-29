@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.14.0",
+    "@lukehagar/plexjs": "^0.43.0",
     "@yotoplay/yoto-sdk": "^1.2.4",
     "hono": "^4.7.0",
     "pino": "^9.6.0",
