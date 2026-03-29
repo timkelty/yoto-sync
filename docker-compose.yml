@@ -1,0 +1,13 @@
+services:
+  yoto-sync:
+    build: .
+    ports:
+      - "${PORT:-3000}:3000"
+    volumes:
+      - ./data:/data
+      - /mnt/user/media:/media:ro
+    environment:
+      # Required: the private key to decrypt .env at runtime
+      # Set this in your shell or Unraid Docker template
+      - DOTENV_PRIVATE_KEY=${DOTENV_PRIVATE_KEY}
+    restart: unless-stopped

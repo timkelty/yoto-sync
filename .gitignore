@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+data/
+*.tgz
+
+# dotenvx: private keys must NEVER be committed
+.env.keys
+
+# Unencrypted local overrides (optional, not committed)
+.env.local
