@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>yoto-sync</Name>
+  <Repository>ghcr.io/timkelty/yoto-sync:latest</Repository>
+  <Registry>https://github.com/timkelty/yoto-sync/pkgs/container/yoto-sync</Registry>
+  <Network>bridge</Network>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/timkelty/yoto-sync/issues</Support>
+  <Project>https://github.com/timkelty/yoto-sync</Project>
+  <GitHub>https://github.com/timkelty/yoto-sync</GitHub>
+  <ReadMe>https://github.com/timkelty/yoto-sync</ReadMe>
+  <Overview>Sync local directories or Plex playlists into Yoto Make-Your-Own cards. Includes optional Plex polling and automatic Yoto display icon resolution from yotoicons.com.</Overview>
+  <WebUI>http://[IP]:[PORT:3000]/health</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/timkelty/yoto-sync/main/extras/unraid/yoto-sync.xml</TemplateURL>
+  <Branch>
+    <Tag>latest</Tag>
+    <TagDescription>Latest stable image</TagDescription>
+  </Branch>
+  <Config Name="Web UI Port" Target="3000" Default="3000" Mode="tcp" Description="Port exposed by the yoto-sync HTTP server." Type="Port" Display="always" Required="true" Mask="false" />
+  <Config Name="AppData" Target="/data" Default="/mnt/user/appdata/yoto-sync" Mode="rw" Description="Persistent data directory for OAuth tokens, sync state, and icon cache." Type="Path" Display="always" Required="true" Mask="false" />
+  <Config Name="Media Library" Target="/media" Default="/mnt/user/media" Mode="ro" Description="Optional read-only media path for local-directory syncs or Plex file access." Type="Path" Display="always" Required="false" Mask="false" />
+  <Config Name="Sync Config Directory" Target="/config" Default="/mnt/user/appdata/yoto-sync/config" Mode="rw" Description="Optional directory to hold sync-config.json for Plex polling. Leave unused if not needed." Type="Path" Display="advanced" Required="false" Mask="false" />
+  <Config Name="DOTENV_PRIVATE_KEY" Target="DOTENV_PRIVATE_KEY" Default="" Description="Required dotenvx private key used to decrypt the committed .env file at startup." Type="Variable" Display="always" Required="true" Mask="true" />
+  <Config Name="YOTO_CLIENT_ID" Target="YOTO_CLIENT_ID" Default="" Description="Optional override for the Yoto OAuth client ID. Usually leave blank and use the encrypted .env file." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="PORT" Target="PORT" Default="3000" Description="Internal application port. Keep aligned with the port mapping above unless you have a specific reason to change it." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="DATA_DIR" Target="DATA_DIR" Default="/data" Description="Internal data path used for state, token, and icon cache storage." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="LOG_LEVEL" Target="LOG_LEVEL" Default="info" Description="Log verbosity: fatal, error, warn, info, debug, or trace." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="PLEX_URL" Target="PLEX_URL" Default="" Description="Optional Plex server URL. Set together with PLEX_TOKEN to enable Plex playlist syncs." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="PLEX_TOKEN" Target="PLEX_TOKEN" Default="" Description="Optional Plex authentication token. Required when PLEX_URL is set." Type="Variable" Display="advanced" Required="false" Mask="true" />
+  <Config Name="SYNC_CONFIG_PATH" Target="SYNC_CONFIG_PATH" Default="/config/sync-config.json" Description="Optional path to the playlist-to-card mapping file used by the Plex polling scheduler." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="POLL_INTERVAL_SECONDS" Target="POLL_INTERVAL_SECONDS" Default="300" Description="Optional Plex polling interval in seconds. Must be at least 10." Type="Variable" Display="advanced" Required="false" Mask="false" />
+</Container>
