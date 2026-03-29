@@ -141,9 +141,7 @@ describe("diffSnapshots", () => {
   });
 
   it("detects removed tracks", () => {
-    const tracks = [
-      makeTrack({ sourceId: "a.mp3", contentHash: "hash-a" }),
-    ];
+    const tracks = [makeTrack({ sourceId: "a.mp3", contentHash: "hash-a" })];
 
     const previous = makeSnapshot([
       {

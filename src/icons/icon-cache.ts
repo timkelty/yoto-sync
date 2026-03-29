@@ -42,8 +42,7 @@ export class IconCache {
    * Store a resolved icon in the cache.
    */
   async set(searchTerm: string, entry: IconCacheEntry): Promise<void> {
-    const data =
-      (await this.stateStore.load<IconCacheData>(CACHE_KEY)) ?? {};
+    const data = (await this.stateStore.load<IconCacheData>(CACHE_KEY)) ?? {};
     data[searchTerm] = entry;
     await this.stateStore.save(CACHE_KEY, data);
   }

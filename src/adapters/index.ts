@@ -18,6 +18,8 @@ export function createAdapter(config: AdapterConfig): PlaylistSource {
     case "plex-playlist":
       return new PlexPlaylistAdapter(config);
     default:
-      throw new Error(`Unknown adapter type: ${String((config as { type: string }).type)}`);
+      throw new Error(
+        `Unknown adapter type: ${String((config as { type: string }).type)}`,
+      );
   }
 }

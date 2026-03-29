@@ -70,9 +70,7 @@ function validateSyncConfig(data: unknown, filePath: string): SyncConfig {
   const obj = data as Record<string, unknown>;
 
   if (!Array.isArray(obj["mappings"])) {
-    throw new Error(
-      `Sync config at ${filePath}: "mappings" must be an array`,
-    );
+    throw new Error(`Sync config at ${filePath}: "mappings" must be an array`);
   }
 
   const mappings: PlaylistMapping[] = [];
@@ -89,7 +87,10 @@ function validateSyncConfig(data: unknown, filePath: string): SyncConfig {
       throw new Error(`${prefix}: "name" is required (string)`);
     }
 
-    if (typeof entry["plexPlaylistId"] !== "number" || !Number.isInteger(entry["plexPlaylistId"])) {
+    if (
+      typeof entry["plexPlaylistId"] !== "number" ||
+      !Number.isInteger(entry["plexPlaylistId"])
+    ) {
       throw new Error(`${prefix}: "plexPlaylistId" is required (integer)`);
     }
 
@@ -101,7 +102,10 @@ function validateSyncConfig(data: unknown, filePath: string): SyncConfig {
       throw new Error(`${prefix}: "title" must be a string if provided`);
     }
 
-    if (entry["loudnorm"] !== undefined && typeof entry["loudnorm"] !== "boolean") {
+    if (
+      entry["loudnorm"] !== undefined &&
+      typeof entry["loudnorm"] !== "boolean"
+    ) {
       throw new Error(`${prefix}: "loudnorm" must be a boolean if provided`);
     }
 

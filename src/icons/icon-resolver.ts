@@ -140,10 +140,7 @@ export class IconResolver {
     // Check cache first
     const cached = await cache.get(searchTerm);
     if (cached) {
-      logger.debug(
-        { searchTerm, mediaId: cached.mediaId },
-        "Icon cache hit",
-      );
+      logger.debug({ searchTerm, mediaId: cached.mediaId }, "Icon cache hit");
       return { icon16x16: `yoto:#${cached.mediaId}` };
     }
 

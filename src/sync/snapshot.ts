@@ -25,9 +25,7 @@ export interface SnapshotDiff {
  * The hash is order-sensitive — a different order produces a different hash.
  */
 export function computeSnapshotHash(tracks: AdapterTrack[]): string {
-  const content = tracks
-    .map((t) => `${t.sourceId}:${t.contentHash}`)
-    .join("|");
+  const content = tracks.map((t) => `${t.sourceId}:${t.contentHash}`).join("|");
   return createHash("sha256").update(content).digest("hex");
 }
 
@@ -63,9 +61,7 @@ export function diffSnapshots(
     };
   }
 
-  const previousMap = new Map(
-    previous.tracks.map((t) => [t.sourceId, t]),
-  );
+  const previousMap = new Map(previous.tracks.map((t) => [t.sourceId, t]));
 
   const added: AdapterTrack[] = [];
   const changed: AdapterTrack[] = [];
@@ -85,9 +81,7 @@ export function diffSnapshots(
     }
   }
 
-  const removed = previous.tracks.filter(
-    (t) => !seenSourceIds.has(t.sourceId),
-  );
+  const removed = previous.tracks.filter((t) => !seenSourceIds.has(t.sourceId));
 
   // Check order: compare sourceId sequences
   const currentOrder = currentTracks.map((t) => t.sourceId);

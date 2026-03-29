@@ -40,7 +40,9 @@ export function loadConfig(): AppConfig {
 
   const port = parseInt(process.env["PORT"] ?? "3000", 10);
   if (isNaN(port) || port < 1 || port > 65535) {
-    throw new Error(`PORT must be a valid port number, got: ${process.env["PORT"]}`);
+    throw new Error(
+      `PORT must be a valid port number, got: ${process.env["PORT"]}`,
+    );
   }
 
   const dataDir = process.env["DATA_DIR"] ?? "./data";
@@ -57,7 +59,9 @@ export function loadConfig(): AppConfig {
   const plexToken = process.env["PLEX_TOKEN"];
 
   if ((plexUrl && !plexToken) || (!plexUrl && plexToken)) {
-    throw new Error("PLEX_URL and PLEX_TOKEN must both be set if either is provided.");
+    throw new Error(
+      "PLEX_URL and PLEX_TOKEN must both be set if either is provided.",
+    );
   }
 
   const syncConfigPath = process.env["SYNC_CONFIG_PATH"];

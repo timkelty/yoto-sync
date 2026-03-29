@@ -108,7 +108,8 @@ export class PlexPollScheduler {
       });
 
       const playlists =
-        response.mediaContainerWithPlaylistMetadata?.mediaContainer?.metadata ?? [];
+        response.mediaContainerWithPlaylistMetadata?.mediaContainer?.metadata ??
+        [];
 
       // Build lookup: ratingKey → updatedAt
       const plexState = new Map<number, { updatedAt: number; title: string }>();
@@ -123,7 +124,8 @@ export class PlexPollScheduler {
       }
 
       // Check each mapping for changes
-      const changed: Array<{ mapping: PlaylistMapping; plexTitle: string }> = [];
+      const changed: Array<{ mapping: PlaylistMapping; plexTitle: string }> =
+        [];
 
       for (const mapping of this.deps.syncConfig.mappings) {
         const plexInfo = plexState.get(mapping.plexPlaylistId);
@@ -239,9 +241,8 @@ export class PlexPollScheduler {
 
   private async loadLastSeen(): Promise<void> {
     try {
-      const data = await this.stateStore.load<Record<string, number>>(
-        "plex-last-seen",
-      );
+      const data =
+        await this.stateStore.load<Record<string, number>>("plex-last-seen");
       if (data) {
         this.lastSeen = new Map(
           Object.entries(data).map(([k, v]) => [Number(k), v as number]),

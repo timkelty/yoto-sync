@@ -113,9 +113,9 @@ describe("LocalDirectoryAdapter", () => {
     expect(
       tracks.find((t) => t.filename === "02_Another Song.flac")!.title,
     ).toBe("Another Song");
-    expect(
-      tracks.find((t) => t.filename === "03.Third One.ogg")!.title,
-    ).toBe("Third One");
+    expect(tracks.find((t) => t.filename === "03.Third One.ogg")!.title).toBe(
+      "Third One",
+    );
     expect(tracks.find((t) => t.filename === "No Number.mp3")!.title).toBe(
       "No Number",
     );

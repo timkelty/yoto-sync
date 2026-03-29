@@ -64,10 +64,7 @@ export class YotoIconsClient {
       const html = await response.text();
       return this.parseResults(html, limit);
     } catch (err) {
-      this.logger?.warn(
-        { err, query },
-        "Failed to search yotoicons.com",
-      );
+      this.logger?.warn({ err, query }, "Failed to search yotoicons.com");
       return [];
     }
   }
@@ -114,7 +111,8 @@ export class YotoIconsClient {
     const results: YotoIconResult[] = [];
 
     // Match: populate_icon_modal('id', 'category', 'tag1', 'tag2', 'author', 'downloads')
-    const regex = /populate_icon_modal\(\s*'([^']*)'\s*,\s*'([^']*)'\s*,\s*'([^']*)'\s*,\s*'([^']*)'\s*,\s*'([^']*)'\s*,\s*'(\d+)'\s*\)/g;
+    const regex =
+      /populate_icon_modal\(\s*'([^']*)'\s*,\s*'([^']*)'\s*,\s*'([^']*)'\s*,\s*'([^']*)'\s*,\s*'([^']*)'\s*,\s*'(\d+)'\s*\)/g;
 
     let match;
     while ((match = regex.exec(html)) !== null && results.length < limit) {

@@ -78,10 +78,7 @@ async function pollForTranscode(
         // Extract the hash from the URL. The URL format from Yoto
         // contains the transcoded file reference.
         const hash = extractHashFromUrl(result.url);
-        logger.debug(
-          { uploadId, hash, attempt },
-          "Transcoding completed",
-        );
+        logger.debug({ uploadId, hash, attempt }, "Transcoding completed");
         return hash;
       }
 
@@ -91,10 +88,7 @@ async function pollForTranscode(
       );
     } catch (err) {
       // Transient errors during polling are expected — keep trying
-      logger.debug(
-        { uploadId, attempt, err },
-        "Transcode poll attempt failed",
-      );
+      logger.debug({ uploadId, attempt, err }, "Transcode poll attempt failed");
     }
   }
 

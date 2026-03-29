@@ -52,10 +52,7 @@ export async function sync(
   const adapter: PlaylistSource = createAdapter(request.source);
   const currentTracks = await adapter.getTracks();
 
-  logger.info(
-    { trackCount: currentTracks.length },
-    "Source scan complete",
-  );
+  logger.info({ trackCount: currentTracks.length }, "Source scan complete");
 
   if (currentTracks.length === 0) {
     return {
@@ -138,9 +135,7 @@ export async function sync(
   }
 
   // 5. Resolve icon (non-fatal)
-  const title =
-    request.title ??
-    deriveTitle(request.source);
+  const title = request.title ?? deriveTitle(request.source);
 
   let display: YotoDisplay | undefined;
   if (deps.yotoJwt) {
@@ -218,7 +213,9 @@ export async function sync(
 /**
  * Derive a card title from the adapter config.
  */
-function deriveTitle(source: import("../adapters/types.js").AdapterConfig): string {
+function deriveTitle(
+  source: import("../adapters/types.js").AdapterConfig,
+): string {
   switch (source.type) {
     case "local-directory":
       return basename(source.path) || "My Playlist";

@@ -38,7 +38,10 @@ export class YotoIconUploader {
   ): Promise<IconUploadResult> {
     const url = `${YOTO_API_BASE}/media/displayIcons/user/me/upload?autoConvert=true&filename=${encodeURIComponent(filename)}`;
 
-    this.logger?.debug({ filename, size: pngBuffer.length }, "Uploading icon to Yoto");
+    this.logger?.debug(
+      { filename, size: pngBuffer.length },
+      "Uploading icon to Yoto",
+    );
 
     const formData = new FormData();
     const blob = new Blob([new Uint8Array(pngBuffer)], { type: "image/png" });

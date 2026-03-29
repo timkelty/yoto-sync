@@ -196,9 +196,7 @@ export class DeviceCodeAuth {
     return {
       accessToken: data.access_token,
       refreshToken: data.refresh_token ?? refreshToken,
-      expiresAt: new Date(
-        Date.now() + data.expires_in * 1000,
-      ).toISOString(),
+      expiresAt: new Date(Date.now() + data.expires_in * 1000).toISOString(),
     };
   }
 

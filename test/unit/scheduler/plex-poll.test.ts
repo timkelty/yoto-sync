@@ -65,7 +65,9 @@ describe("PlexPollScheduler", () => {
     await rm(tempDir, { recursive: true, force: true });
   });
 
-  function createScheduler(overrides: Partial<{ syncConfig: SyncConfig }> = {}) {
+  function createScheduler(
+    overrides: Partial<{ syncConfig: SyncConfig }> = {},
+  ) {
     return new PlexPollScheduler({
       sdk: {} as never,
       plexUrl: "http://localhost:32400",
@@ -351,8 +353,6 @@ describe("PlexPollScheduler", () => {
     await scheduler.start();
     scheduler.stop();
 
-    expect(mockLogger.info).toHaveBeenCalledWith(
-      "Plex poll scheduler stopped",
-    );
+    expect(mockLogger.info).toHaveBeenCalledWith("Plex poll scheduler stopped");
   });
 });
