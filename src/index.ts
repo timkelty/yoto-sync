@@ -30,14 +30,12 @@ async function main() {
     logger,
     sdk,
     dataDir: config.DATA_DIR,
+    yotoJwt: accessToken,
   });
 
-  const server = serve(
-    { fetch: app.fetch, port: config.PORT },
-    (info) => {
-      logger.info({ port: info.port }, "Server listening");
-    },
-  );
+  const server = serve({ fetch: app.fetch, port: config.PORT }, (info) => {
+    logger.info({ port: info.port }, "Server listening");
+  });
 
   // Start Plex polling scheduler if configured
   let scheduler: PlexPollScheduler | undefined;
@@ -53,6 +51,7 @@ async function main() {
         dataDir: config.DATA_DIR,
         pollIntervalSeconds: config.POLL_INTERVAL_SECONDS ?? 300,
         logger: logger.child({ component: "plex-scheduler" }),
+        yotoJwt: accessToken,
       });
       await scheduler.start();
     } catch (err) {

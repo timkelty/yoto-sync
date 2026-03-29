@@ -15,6 +15,8 @@ export interface SchedulerDeps {
   dataDir: string;
   pollIntervalSeconds: number;
   logger: pino.Logger;
+  /** JWT for Yoto API (needed for icon uploads). If absent, icons are skipped. */
+  yotoJwt?: string;
 }
 
 /**
@@ -211,11 +213,13 @@ export class PlexPollScheduler {
         source,
         title: mapping.title ?? plexTitle,
         loudnorm: mapping.loudnorm,
+        icon: mapping.icon,
       },
       {
         sdk,
         stateStore: this.stateStore,
         logger: logger.child({ mapping: mapping.name }),
+        yotoJwt: this.deps.yotoJwt,
       },
     );
 

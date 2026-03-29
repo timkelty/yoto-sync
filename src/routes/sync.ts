@@ -8,6 +8,8 @@ import { StateStore } from "../state/store.js";
 interface SyncRouteConfig {
   sdk: YotoSdk;
   dataDir: string;
+  /** JWT for Yoto API (needed for icon uploads). If absent, icons are skipped. */
+  yotoJwt?: string;
 }
 
 const syncRoute = new Hono<AppEnv>();
@@ -35,10 +37,7 @@ export function createSyncRoute(config: SyncRouteConfig): typeof syncRoute {
     }
 
     if (!body.source || typeof body.source !== "object" || !body.source.type) {
-      return c.json(
-        { error: "source is required with a valid type" },
-        400,
-      );
+      return c.json({ error: "source is required with a valid type" }, 400);
     }
 
     if (body.source.type === "local-directory" && !body.source.path) {
@@ -49,22 +48,32 @@ export function createSyncRoute(config: SyncRouteConfig): typeof syncRoute {
     }
 
     if (body.source.type === "plex-playlist") {
-      const plexSource = body.source as import("../adapters/types.js").PlexPlaylistConfig;
+      const plexSource =
+        body.source as import("../adapters/types.js").PlexPlaylistConfig;
       if (!plexSource.playlistId || typeof plexSource.playlistId !== "number") {
         return c.json(
-          { error: "source.playlistId is required (number) for plex-playlist adapter" },
+          {
+            error:
+              "source.playlistId is required (number) for plex-playlist adapter",
+          },
           400,
         );
       }
       if (!plexSource.plexUrl || typeof plexSource.plexUrl !== "string") {
         return c.json(
-          { error: "source.plexUrl is required (string) for plex-playlist adapter" },
+          {
+            error:
+              "source.plexUrl is required (string) for plex-playlist adapter",
+          },
           400,
         );
       }
       if (!plexSource.plexToken || typeof plexSource.plexToken !== "string") {
         return c.json(
-          { error: "source.plexToken is required (string) for plex-playlist adapter" },
+          {
+            error:
+              "source.plexToken is required (string) for plex-playlist adapter",
+          },
           400,
         );
       }
@@ -74,6 +83,7 @@ export function createSyncRoute(config: SyncRouteConfig): typeof syncRoute {
       sdk: config.sdk,
       stateStore,
       logger,
+      yotoJwt: config.yotoJwt,
     };
 
     try {

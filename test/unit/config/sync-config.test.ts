@@ -50,6 +50,7 @@ describe("loadSyncConfig", () => {
       cardId: "card-abc",
       title: "My Card",
       loudnorm: true,
+      icon: undefined,
       mediaPathMapping: undefined,
     });
     expect(config.mappings[1]!.mediaPathMapping).toEqual({
@@ -68,9 +69,7 @@ describe("loadSyncConfig", () => {
     const configPath = join(tempDir, "bad.json");
     await writeFile(configPath, "not json {{{");
 
-    await expect(loadSyncConfig(configPath)).rejects.toThrow(
-      "not valid JSON",
-    );
+    await expect(loadSyncConfig(configPath)).rejects.toThrow("not valid JSON");
   });
 
   it("throws when mappings is missing", async () => {
@@ -110,9 +109,7 @@ describe("loadSyncConfig", () => {
     await writeFile(
       configPath,
       JSON.stringify({
-        mappings: [
-          { name: "test", plexPlaylistId: "abc", cardId: "card-1" },
-        ],
+        mappings: [{ name: "test", plexPlaylistId: "abc", cardId: "card-1" }],
       }),
     );
 
@@ -152,6 +149,67 @@ describe("loadSyncConfig", () => {
 
     await expect(loadSyncConfig(configPath)).rejects.toThrow(
       "duplicate plexPlaylistId 1",
+    );
+  });
+
+  it("parses icon as a string search query", async () => {
+    const configPath = join(tempDir, "config.json");
+    await writeFile(
+      configPath,
+      JSON.stringify({
+        mappings: [
+          {
+            name: "Dino Songs",
+            plexPlaylistId: 1,
+            cardId: "card-1",
+            icon: "dinosaur",
+          },
+        ],
+      }),
+    );
+
+    const config = await loadSyncConfig(configPath);
+    expect(config.mappings[0]!.icon).toBe("dinosaur");
+  });
+
+  it("parses icon as false (disabled)", async () => {
+    const configPath = join(tempDir, "config.json");
+    await writeFile(
+      configPath,
+      JSON.stringify({
+        mappings: [
+          {
+            name: "No Icon",
+            plexPlaylistId: 1,
+            cardId: "card-1",
+            icon: false,
+          },
+        ],
+      }),
+    );
+
+    const config = await loadSyncConfig(configPath);
+    expect(config.mappings[0]!.icon).toBe(false);
+  });
+
+  it("throws for non-string/non-false icon value", async () => {
+    const configPath = join(tempDir, "config.json");
+    await writeFile(
+      configPath,
+      JSON.stringify({
+        mappings: [
+          {
+            name: "Bad Icon",
+            plexPlaylistId: 1,
+            cardId: "card-1",
+            icon: 123,
+          },
+        ],
+      }),
+    );
+
+    await expect(loadSyncConfig(configPath)).rejects.toThrow(
+      '"icon" must be a string or false',
     );
   });
 });

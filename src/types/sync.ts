@@ -43,6 +43,9 @@ export interface SyncRequest {
 
   /** Whether to apply loudness normalization during transcode */
   loudnorm?: boolean;
+
+  /** Icon override: search query, "yotoicon:<id>", "yoto:#<mediaId>", or false to disable */
+  icon?: string | false;
 }
 
 /**

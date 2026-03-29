@@ -1,5 +1,10 @@
 import type { AdapterTrack } from "../adapters/types.js";
-import type { YotoCardUpdate, YotoChapter, YotoTrack } from "../types/yoto.js";
+import type {
+  YotoCardUpdate,
+  YotoChapter,
+  YotoDisplay,
+  YotoTrack,
+} from "../types/yoto.js";
 
 /**
  * Build a complete Yoto card update payload from adapter tracks
@@ -12,6 +17,7 @@ export function buildCardUpdate(
   title: string,
   tracks: AdapterTrack[],
   yotoHashes: Map<string, string>,
+  display?: YotoDisplay,
 ): YotoCardUpdate {
   const yotoTracks: YotoTrack[] = tracks.map((track, index) => {
     const hash = yotoHashes.get(track.sourceId);
@@ -34,6 +40,7 @@ export function buildCardUpdate(
   const chapter: YotoChapter = {
     key: "01",
     title,
+    ...(display && { display }),
     tracks: yotoTracks,
   };
 

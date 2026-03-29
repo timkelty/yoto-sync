@@ -72,9 +72,9 @@ describe("buildCardUpdate", () => {
     const tracks = [makeTrack({ sourceId: "a.mp3" })];
     const hashes = new Map<string, string>(); // empty!
 
-    expect(() =>
-      buildCardUpdate("TEST1", "Test", tracks, hashes),
-    ).toThrow(/Missing Yoto hash/);
+    expect(() => buildCardUpdate("TEST1", "Test", tracks, hashes)).toThrow(
+      /Missing Yoto hash/,
+    );
   });
 
   it("sets autoadvance to 'next' and playbackType to 'linear'", () => {
@@ -85,5 +85,26 @@ describe("buildCardUpdate", () => {
 
     expect(result.content.config?.autoadvance).toBe("next");
     expect(result.content.playbackType).toBe("linear");
+  });
+
+  it("sets display on chapter when provided", () => {
+    const tracks = [makeTrack({ sourceId: "a.mp3" })];
+    const hashes = new Map([["a.mp3", "hash-a"]]);
+    const display = { icon16x16: "yoto:#abc123" };
+
+    const result = buildCardUpdate("TEST1", "Test", tracks, hashes, display);
+
+    expect(result.content.chapters[0]!.display).toEqual({
+      icon16x16: "yoto:#abc123",
+    });
+  });
+
+  it("omits display on chapter when not provided", () => {
+    const tracks = [makeTrack({ sourceId: "a.mp3" })];
+    const hashes = new Map([["a.mp3", "hash-a"]]);
+
+    const result = buildCardUpdate("TEST1", "Test", tracks, hashes);
+
+    expect(result.content.chapters[0]!.display).toBeUndefined();
   });
 });

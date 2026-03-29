@@ -20,6 +20,9 @@ export interface PlaylistMapping {
   /** Optional: apply loudness normalization */
   loudnorm?: boolean;
 
+  /** Optional: icon override — search query, "yotoicon:<id>", "yoto:#<mediaId>", or false to disable */
+  icon?: string | false;
+
   /** Optional: path mapping for Plex media files */
   mediaPathMapping?: PlexPlaylistConfig["mediaPathMapping"];
 }
@@ -102,6 +105,16 @@ function validateSyncConfig(data: unknown, filePath: string): SyncConfig {
       throw new Error(`${prefix}: "loudnorm" must be a boolean if provided`);
     }
 
+    if (
+      entry["icon"] !== undefined &&
+      entry["icon"] !== false &&
+      typeof entry["icon"] !== "string"
+    ) {
+      throw new Error(
+        `${prefix}: "icon" must be a string or false if provided`,
+      );
+    }
+
     let mediaPathMapping: PlexPlaylistConfig["mediaPathMapping"];
     if (entry["mediaPathMapping"] !== undefined) {
       const mpm = entry["mediaPathMapping"] as Record<string, unknown>;
@@ -122,6 +135,7 @@ function validateSyncConfig(data: unknown, filePath: string): SyncConfig {
       cardId: entry["cardId"] as string,
       title: entry["title"] as string | undefined,
       loudnorm: entry["loudnorm"] as boolean | undefined,
+      icon: entry["icon"] as string | false | undefined,
       mediaPathMapping,
     });
   }

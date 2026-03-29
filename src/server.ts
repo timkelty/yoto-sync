@@ -10,6 +10,8 @@ interface AppOptions {
   logger: pino.Logger;
   sdk: YotoSdk;
   dataDir: string;
+  /** JWT for Yoto API (needed for icon uploads). If absent, icons are skipped. */
+  yotoJwt?: string;
 }
 
 /**
@@ -26,10 +28,14 @@ export function createApp(options: AppOptions): Hono<AppEnv> {
 
   // Routes
   app.route("/", health);
-  app.route("/", createSyncRoute({
-    sdk: options.sdk,
-    dataDir: options.dataDir,
-  }));
+  app.route(
+    "/",
+    createSyncRoute({
+      sdk: options.sdk,
+      dataDir: options.dataDir,
+      yotoJwt: options.yotoJwt,
+    }),
+  );
 
   // Global error handler
   app.onError((err, c) => {

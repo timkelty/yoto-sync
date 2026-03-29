@@ -3,6 +3,10 @@ import type { YotoSdk } from "@yotoplay/yoto-sdk";
 import type pino from "pino";
 import { createAdapter } from "../adapters/index.js";
 import type { PlaylistSource } from "../adapters/types.js";
+import { IconCache } from "../icons/icon-cache.js";
+import { IconResolver } from "../icons/icon-resolver.js";
+import { YotoIconUploader } from "../icons/yoto-icon-uploader.js";
+import { YotoIconsClient } from "../icons/yotoicons-client.js";
 import { StateStore } from "../state/store.js";
 import type {
   SyncRequest,
@@ -10,6 +14,7 @@ import type {
   SyncSnapshot,
   SyncedTrackEntry,
 } from "../types/sync.js";
+import type { YotoDisplay } from "../types/yoto.js";
 import { buildCardUpdate } from "./card-builder.js";
 import { computeSnapshotHash, diffSnapshots } from "./snapshot.js";
 import { uploadTrack } from "./uploader.js";
@@ -18,6 +23,8 @@ export interface SyncDeps {
   sdk: YotoSdk;
   stateStore: StateStore;
   logger: pino.Logger;
+  /** JWT for Yoto API (needed for icon uploads). If absent, icons are skipped. */
+  yotoJwt?: string;
 }
 
 /**
@@ -130,19 +137,43 @@ export async function sync(
     yotoHashes.set(track.sourceId, transcodedHash);
   }
 
-  // 5. Build card payload
+  // 5. Resolve icon (non-fatal)
   const title =
     request.title ??
     deriveTitle(request.source);
 
+  let display: YotoDisplay | undefined;
+  if (deps.yotoJwt) {
+    try {
+      const iconCache = new IconCache(stateStore);
+      const iconsClient = new YotoIconsClient(logger);
+      const uploader = new YotoIconUploader(deps.yotoJwt, logger);
+      const resolver = new IconResolver({
+        iconsClient,
+        uploader,
+        cache: iconCache,
+        logger,
+      });
+
+      const resolved = await resolver.resolve(request.icon, title);
+      if (resolved) {
+        display = resolved;
+      }
+    } catch (err) {
+      logger.warn({ err }, "Icon resolution failed, proceeding without icon");
+    }
+  }
+
+  // 6. Build card payload
   const cardUpdate = buildCardUpdate(
     request.cardId,
     title,
     currentTracks,
     yotoHashes,
+    display,
   );
 
-  // 6. Push to Yoto API
+  // 7. Push to Yoto API
   logger.info(
     { cardId: request.cardId, trackCount: currentTracks.length },
     "Updating card",
@@ -154,7 +185,7 @@ export async function sync(
     cardUpdate as unknown as import("@yotoplay/yoto-sdk").YotoJson,
   );
 
-  // 7. Save snapshot
+  // 8. Save snapshot
   const finalSnapshot: SyncSnapshot = {
     syncedAt: new Date().toISOString(),
     snapshotHash: computeSnapshotHash(currentTracks),
